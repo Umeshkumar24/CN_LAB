@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.io.*;
 import java.net.*;
@@ -22,7 +24,7 @@ public class ClientHandler extends Thread {
 		this.desktop = desktop;
 		this.port = port;
 		clientIP = (((InetSocketAddress) client.getRemoteSocketAddress()).getAddress()).toString().replace("/", "");
-		System.out.println(port);
+		System.out.println(clientIP + "\n" + port);
 		start();
 	}
 
@@ -72,7 +74,6 @@ public class ClientHandler extends Thread {
 		jf = new JFrame("This is Server Window");
 		jf.setSize(800, 820);
 		JTabbedPane jtp = new JTabbedPane();
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jtp.addTab("System Properties", new SystemProperties());
 		jf.add(jtp);
 		jf.setVisible(true);

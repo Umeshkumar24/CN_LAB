@@ -20,6 +20,7 @@ public class ScreenReceiver extends Thread {
         try {
             while (continueLoop) {
                 ImageIcon imageIcon = (ImageIcon) cObjectInputStream.readObject();
+                ;
                 Image image = imageIcon.getImage();
                 image = image.getScaledInstance(cPanel.getWidth(), cPanel.getHeight(), Image.SCALE_FAST);
                 Graphics graphics = cPanel.getGraphics();

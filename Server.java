@@ -18,7 +18,7 @@ class DiscoveryHandler extends Thread {
 		try {
 			while (true) {
 				d.interrupt();
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 				d = new Discovery(devices);
 				d.start();
 				System.out.println(devices);
@@ -56,7 +56,6 @@ class Discovery extends Thread {
 						break;
 					}
 				}
-				System.out.println("Recieved back: " + s);
 			}
 			socket.close();
 		} catch (Exception e) {
@@ -65,25 +64,25 @@ class Discovery extends Thread {
 }
 
 public class Server {
-	private JFrame jFrame = null;
-	private JDesktopPane desktop = null;
-	private static int port = 8080;
-	ServerSocket sc = null;
+	private static JFrame jFrame = null;
+	private static JDesktopPane desktop = null;
+	private static int port = 1234;
+	static ServerSocket sc = null;
 	static HashMap<String, String> devices = new HashMap<String, String>();
 
 	public static void main(String args[]) {
 		javax.swing.SwingUtilities.invokeLater(() -> {
 			createAndShowGUI();
 		});
-		new Server().initialize(port);
+		initialize(port);
 	}
 
-	public void initialize(int port) {
+	public static void initialize(int port) {
 		try {
 			sc = new ServerSocket(port);
-			drawGUI();
 			while (true) {
 				Socket client = sc.accept();
+				drawGUI();
 				System.out.println("New client Connected to the server");
 				new ClientHandler(client, desktop, port);
 			}
@@ -92,11 +91,10 @@ public class Server {
 		}
 	}
 
-	public void drawGUI() {
+	public static void drawGUI() {
 		jFrame = new JFrame("Server Window");
 		desktop = new JDesktopPane();
 		jFrame.add(desktop, new BorderLayout().CENTER);
-		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setExtendedState(jFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		jFrame.setVisible(true);
 	}
@@ -111,10 +109,23 @@ public class Server {
 				d.start();
 			}
 		});
+
 		JPanel panel = new JPanel();
+		JButton refresh = new JButton("Refresh");
+		DeviceCardsApp device = new DeviceCardsApp(devices);
+		device.setVisible(true);
+		refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				device.repaint();
+				SwingUtilities.invokeLater(() -> {
+					device.initializeUI();
+				});
+			}
+		});
+
 		panel.add(discoverButton);
-		frame.getContentPane().add(panel);
-		frame.setSize(300, 100);
-		frame.setVisible(true);
+		panel.add(refresh);
+		device.addNew(panel);
+		device.setSize(300, 200);
 	}
 }

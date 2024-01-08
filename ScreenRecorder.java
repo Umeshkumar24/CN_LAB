@@ -47,7 +47,7 @@ public class ScreenRecorder extends Thread {
 				ex.printStackTrace();
 			}
 			try {
-				Thread.sleep(30);
+				Thread.sleep(60);
 			} catch (InterruptedException e) {
 				Continue = false;
 				e.printStackTrace();

@@ -9,26 +9,21 @@ public class Client {
 	public static void main(String args[]) {
 		int PORT = 8080;
 		try (DatagramSocket socket = new DatagramSocket(PORT)) {
-			byte[] receiveData = new byte[1024];
-			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-			socket.receive(receivePacket);
 			InetAddress clientAddress;
 			int clientPort;
-			clientAddress = receivePacket.getAddress();
-			clientPort = receivePacket.getPort();
-			String ip = clientAddress.getHostAddress();
 			// String port = JOptionPane.showInputDialog("Enter the port number");
-			String port = "8080";
-			receiveData = new byte[1024];
-
+			String port = "1234";
+			
 			System.out.println("Device Discovery Responder is running...");
 			while (true) {
-				receivePacket = new DatagramPacket(receiveData, receiveData.length);
+				byte[] receiveData = new byte[1024];
+				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 				socket.receive(receivePacket);
+				clientAddress = receivePacket.getAddress();
+				clientPort = receivePacket.getPort();
+				String ip = clientAddress.getHostAddress();
 				String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
 				if (message.equals("DISCOVER")) {
-					clientAddress = receivePacket.getAddress();
-					clientPort = receivePacket.getPort();
 					String responseMessage = "" + InetAddress.getLocalHost();
 					byte[] sendData = responseMessage.getBytes();
 					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientAddress,
@@ -37,6 +32,8 @@ public class Client {
 					System.out.println("Response sent to " + clientAddress.getHostAddress());
 				}
 				if (message.equals("CONNECT")) {
+					clientAddress = receivePacket.getAddress();
+					clientPort = receivePacket.getPort();
 					new Client().initialize(ip, Integer.parseInt(port));
 				}
 			}
